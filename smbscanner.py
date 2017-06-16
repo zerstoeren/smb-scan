@@ -61,7 +61,7 @@ def PortScan(ip):
         print("+ " + smbbg + '\n')
         return ip
     except:
-        print("- " + ip + "- Port 445 Closed")
+        print("- " + ip + " - Port 445 Closed")
         return ip
 
 if __name__ == "__main__":
