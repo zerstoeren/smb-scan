@@ -28,7 +28,7 @@ def smbscan(server):
         cb = lambda se, sh, w, u, p: (smbargs.domain, smbargs.uname, smbargs.passwd)
         ctx.functionAuthData = cb
 
-# trying to separate 3L entries which are shares instead of directories
+# try to get shares
     try:
         entries = ctx.opendir('smb://' + server).getdents()
         for entry in entries:
