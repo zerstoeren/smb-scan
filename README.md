@@ -91,6 +91,10 @@ has to that file -- I'm working on fixing that.
 Writing to a results file isn't perfect yet.  I'm still working on fixing that as well.  I also want to be able to output to
 multiple formats, but that will be later down the road.
 
+CIDR's are broken and need to be fixed apparently.
+
+False-positive message about the file being bad when it isn't needs to be fixed.
+
 Untested
 ===
 
