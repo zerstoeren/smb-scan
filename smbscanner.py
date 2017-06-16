@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     with open(smbargs.target_file, mode='r', buffering=1) as targets_file:
         targets = targets_file.readlines()
-        if len(targets)>1:
+        if len(targets)<1:
            print "Something is wrong with the target file."
 
 # Handling CIDRS
