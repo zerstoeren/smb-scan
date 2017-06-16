@@ -32,6 +32,7 @@ def smbscan(server):
     try:
         entries = ctx.opendir('smb://' + server).getdents()
         for entry in entries:
+            print server
             print entry 
     except:
         pass
