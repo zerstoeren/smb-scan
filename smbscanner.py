@@ -4,6 +4,7 @@ import smbc
 import sys
 import os
 import argparse
+import netaddr
 from socket import *
 from multiprocessing import Pool, Value, Lock, Manager
 
@@ -73,27 +74,18 @@ if __name__ == "__main__":
     smbparser.add_argument("-uname", type=str, help="Username for authentication")
     smbparser.add_argument("-passwd", type=str, help="Password for authentication")
     smbparser.add_argument("-anonymous", default=False, type=str, help="Use True to test for Anonymous access.")
-#    smbparser.add_argument("--ip_range", type=str, help="CIDR block, use /32 for individuals")
+#    smbparser.add_argument("-ip_range", type=str, help="CIDR block, use /32 for individuals")
     smbparser.add_argument("-packet_rate", default=1, type=int, help="Number to test at once")
 
     smbargs = smbparser.parse_args()
 
-#    print smbargs.target_file
-
     with open(smbargs.target_file, mode='r', buffering=1) as targets_file:
-        targets = targets_file.readlines()
+        targets = "".join(line.strip() for line in targets_file)
         if len(targets)<1:
-           print "Something is wrong with the target file."
-
-# Handling CIDRS
-           expand_range = []
-           for i in xrange(len(targets)):
-              targets[i] = targets[i].strip()
-              if '/' in targets[i]:
-                 expand_range = expand_range + ip_expand(targets[i])
-                 targets.pop(i)
-                 targets = targets + expand_range
-                 print "Checking for communication"
+            print "Something is wrong with the target file."
+        for target in netaddr.IPNetwork(targets).iter_hosts():
+            targets = target
+            print "This is for ip address " + str(targets)
 
     pool = Pool(smbargs.packet_rate)
     valid_targets = pool.map(PortScan, targets)
