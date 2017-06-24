@@ -34,7 +34,8 @@ def smbscan(server):
         entries = ctx.opendir('smb://' + server).getdents()
         for entry in entries:
             print server
-            print entry 
+            print entry
+            print ("[+] " + '%s' % server + ": " + '%s' % entry)             
     except:
         pass
 
@@ -83,9 +84,18 @@ if __name__ == "__main__":
         targets = "".join(line.strip() for line in targets_file)
         if len(targets)<1:
             print "Something is wrong with the target file."
-        for target in netaddr.IPNetwork(targets).iter_hosts():
-            targets = target
-            print "This is for ip address " + str(targets)
+            expanded_range = []
+            for i in xrange(len(targets)):
+                targets[i] = targets[i].strip()
+                if '/' in targets[i]:
+                    expanded_range = expanded_range + ip_expand(targets[i])
+                    targets.pop(i)
+                    targets = targets + expanded_range
+                    print "Checking for SMB servers on target hosts"
+
+#        for target in netaddr.IPNetwork(targets).iter_hosts():
+#            targets = target
+#            print "This is for ip address " + str(targets)
 
     pool = Pool(smbargs.packet_rate)
     valid_targets = pool.map(PortScan, targets)
