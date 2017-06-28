@@ -1,113 +1,65 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import smbc
 import sys
 import os
 import argparse
+import io
+import json
+import time
 import netaddr
 from socket import *
-from multiprocessing import Pool, Value, Lock, Manager
+#from multiprocessing import Pool, Value, Lock, Manager
 
-class creds:
-    def __init__(self, username, password, domain):
-        self.domain = domain
-        self.username = username
-        self.password = password
-    def auth_fn(self, server, share, workgroup, username, password):
-        return(self.username, self.domain, self.password)
-
-# scanning time... I hope
-def smbscan(server):
-    path_obj = []
+def smbscan(server, results_file):
+    smb_obj = []
     ctx = smbc.Context()
-
-    if smbargs.anonymous == True:
-        ctx.optionNoAutoAnonymousLogin == False
-    else:
-        ctx.optionNoAutoAnonymousLogin == True
-# there is a required order for Anonymous Authentication.  i found this lambda action somewhere.
-        cb = lambda se, sh, w, u, p: (smbargs.domain, smbargs.uname, smbargs.passwd)
-        ctx.functionAuthData = cb
-
-# try to get shares
+    ts = time.time()
+    print "attempting to scan " + server + '\n'    
+# attempt to pull shares
     try:
         entries = ctx.opendir('smb://' + server).getdents()
         for entry in entries:
-            print server
-            print entry
-            print ("[+] " + '%s' % server + ": " + '%s' % entry)             
+            if entry is not None:
+                connector = socket(AF_INET, SOCK_STREAM)
+                connector.settimeout(1)
+                try:
+                    connector.connect(('%s' % server, 445))
+                    connector.send('Friendly Portscanner\r\n')
+                    smbbg = connector.recv(2048)
+                    connector.close()
+                    if results_file is not None:
+                        with open(results_file, 'a+') as outfile:
+                            smb_data = 'host: ' + '%s' % server + '\n' + 'is_smb: true\nopen_share:' + '%s' % entry + '\n' + 'banner: ' + '%s' % smbbg + 'is_dupulsar: true\nbg_port: 445\ntimestamp: ' + '%s' % ts + '\n\n'
+                            outfile.write(smb_data)
+                    else:
+                        print ("[+] " + '%s' % server + ": " + '%s' % entry + ", Banner Grab: " + '%s' % smbbg + ' Possible DPulsar Target = True')
+                except:
+                    if results_file is not None:
+                        with open(results_file, 'a+') as outfile:
+                            smb_data = 'host: ' + '%s' % server + '\n' + 'is_smb: true\nopen_share:' + '%s' % entry + '\n' + 'banner: closed\nis_dpulsar: false\nbg_port: 445\ntimestamp: ' + '%s' % ts + '\n\n'
+                            outfile.write(smb_data)
+                    else:
+                        print ("[+] " + '%s' % server + ": " + '%s' % entry + ", Port 445: closed, Possible DPulsar Target = False")
+            else:
+                continue
     except:
-        pass
-
-# trying a semaphore, so hopefully this will work
-    while lock == 1:
-        continue
-    lock.value = 1
-#    print "Writing SMB Records"
-    fp = open(smbargs.results_file, 'a+')
-    for obj in path_obj:
-         path = obj[0]
-         chmod = obj[1]
-         fp.write(str(chmod) + ':\s' + path + '\n')
-    fp.close()
-    lock.value = 0
-    return True
-
-def PortScan(ip):
-    connector = socket(AF_INET, SOCK_STREAM)
-    connector.settimeout(1)
-    try:
-        connector.connect((ip, 445))
-        connector.send('Friendly Portscanner\r\n')
-        smbbg = connector.recv(2048)
-        connector.close()
-        print("+ " + smbbg + '\n')
-        return ip
-    except:
-        print("- " + ip + " - Port 445 Closed")
-        return ip
-
-if __name__ == "__main__":
-    smbparser = argparse.ArgumentParser(description="SMB Checker")
-    smbparser.add_argument("-target_file", type=str, help="Target file")
-    smbparser.add_argument("-results_file", type=str, help="Results file")
-    smbparser.add_argument("-domain", type=str, help="domain for authentication")
-    smbparser.add_argument("-uname", type=str, help="Username for authentication")
-    smbparser.add_argument("-passwd", type=str, help="Password for authentication")
-    smbparser.add_argument("-anonymous", default=False, type=str, help="Use True to test for Anonymous access.")
-#    smbparser.add_argument("-ip_range", type=str, help="CIDR block, use /32 for individuals")
-    smbparser.add_argument("-packet_rate", default=1, type=int, help="Number to test at once")
-
+          pass
+#    return [server,entry,ts]
+if __name__ == "__main__":    
+    smbparser = argparse.ArgumentParser(description="SMB Scanner")
+    smbparser.add_argument("-netrange", type=str, required=False, help="CIDR Block")
+    smbparser.add_argument("-ip", type=str, required=False, help="IP address to scan")
+    smbparser.add_argument("-results_file", type=str, required=False, help="Results File")
+    smbparser.add_argument("-packet_rate", default=1, type=int, required=False, help="Packet rate")
     smbargs = smbparser.parse_args()
+    
+    if smbargs.ip is not None: 
+        results = smbscan(smbargs.ip, smbargs.results_file)
 
-    with open(smbargs.target_file, mode='r', buffering=1) as targets_file:
-        targets = "".join(line.strip() for line in targets_file)
-        if len(targets)<1:
-            print "Something is wrong with the target file."
-            expanded_range = []
-            for i in xrange(len(targets)):
-                targets[i] = targets[i].strip()
-                if '/' in targets[i]:
-                    expanded_range = expanded_range + ip_expand(targets[i])
-                    targets.pop(i)
-                    targets = targets + expanded_range
-                    print "Checking for SMB servers on target hosts"
-
-#        for target in netaddr.IPNetwork(targets).iter_hosts():
-#            targets = target
-#            print "This is for ip address " + str(targets)
-
-    pool = Pool(smbargs.packet_rate)
-    valid_targets = pool.map(PortScan, targets)
-
-    valid_targets[:] = (x for x in valid_targets if x is not None)
-    print valid_targets
-    print "Starting to crawl the targets... this will take some time."
-    lock = Value('i',0,lock=True)
-
-# dynamic scanning pool, so we'll take care of this here
-
-    npool = Pool(smbargs.packet_rate)
-    results = npool.map_async(smbscan, valid_targets)
-    results.get()
-    print "Done"
+    elif smbargs.netrange is not None:
+        for ip in netaddr.IPNetwork(smbargs.netrange).iter_hosts():
+            results = smbscan(str(ip), smbargs.results_file)
+    else: 
+        print "Please define either IP or Netrange." 
+        exit
