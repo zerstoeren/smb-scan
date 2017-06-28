@@ -66,31 +66,9 @@ netaddr
 Usage:
 ======
 
-Currently, you still need a targets file because I haven't finished the flag to input an IP or range as a command-line
-argument. The targets file can be a list of IPs, a list of CIDRS, or combination of the two.
-Will output a flat file containing the Unix-style numerical permissions for the user account used
-
-You may specify many targets in the targets.txt file, including networks.  Be sure to be classy ;) (192.168.1.0/24, not 192.168.1.1/24)
-
 ./smbscanner.py -h
-usage: smbscanner.py [-h] [-target_file TARGET_FILE]
-                     [-results_file RESULTS_FILE] [-domain DOMAIN]
-                     [-uname UNAME] [-passwd PASSWD] [-anonymous ANONYMOUS]
-                     [-packet_rate PACKET_RATE]
 
 SMB Checker
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -target_file TARGET_FILE
-                        Target file
-  -results_file RESULTS_FILE
-                        Results file
-  -domain DOMAIN        domain for authentication
-  -uname UNAME          Username for authentication
-  -passwd PASSWD        Password for authentication
-  -anonymous ANONYMOUS  Use True to test for Anonymous access.
-  -packet_rate PACKET_RATE  Default is 1.
   
 Example
 ===
