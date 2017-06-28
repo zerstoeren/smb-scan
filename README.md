@@ -29,7 +29,8 @@ This is the output with my docker container turned on:
 root@docker# ./smbscanner.py -ip 192.168.10.5
 attempting to scan 192.168.10.5
 
-[+] 192.168.10.5: <smbc.Dirent object "print$" (File share) at 0x7f0571659e40>, Port 445: closed, Possible DPulsar Target = False
+[+] 192.168.10.5: <smbc.Dirent object "print$" (File share) at 0x7f0571659e40>, Port 445: closed, Possible DPulsar Target = 
+False
 [+] 192.168.10.5: <smbc.Dirent object "IPC$" (IPC share) at 0x7f0571659e90>, Port 445: closed, Possible DPulsar Target = False
 root@docker:~/smb-scan# 
 
@@ -59,7 +60,7 @@ Dependencies:
 =============
 
 https://pypi.python.org/pypi/pysmbc/
-
+netaddr
 
 
 Usage:
