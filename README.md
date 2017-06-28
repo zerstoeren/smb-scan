@@ -31,6 +31,7 @@ attempting to scan 192.168.10.5
 
 [+] 192.168.10.5: <smbc.Dirent object "print$" (File share) at 0x7f0571659e40>, Port 445: closed, Possible DPulsar Target = 
 False
+
 [+] 192.168.10.5: <smbc.Dirent object "IPC$" (IPC share) at 0x7f0571659e90>, Port 445: closed, Possible DPulsar Target = False
 root@docker:~/smb-scan# 
 
@@ -41,25 +42,38 @@ If you use the "-results_file" flag, you should get a nice parseable output:
 The file should look like the following:
 
 host: 192.168.10.5
+
 is_smb: true
+
 open_share:<smbc.Dirent object "print$" (File share) at 0x7feaf9721ee0>
+
 banner: closed
+
 is_dpulsar: false
+
 bg_port: 445
+
 timestamp: 1498609377.92
 
 host: 192.168.10.5
+
 is_smb: true
+
 open_share:<smbc.Dirent object "IPC$" (IPC share) at 0x7feaf9721f30>
+
 banner: closed
+
 is_dpulsar: false
+
 bg_port: 445
+
 timestamp: 1498609377.92
 
 Dependencies:
 =============
 
 https://pypi.python.org/pypi/pysmbc/
+
 netaddr
 
 
@@ -74,6 +88,7 @@ Example
 ===
 
 ./smbscanner.py -ip 192.168.10.5
+
 ./smbscanner.py -netrange 192.168.10.0/24 -results_file results.txt
 
 Bugs
@@ -84,9 +99,13 @@ TODO
 ===
 
 add the abiltity to read target files.
+
 add multi-threading
+
 add credentials
+
 add anonymous
+
 add null session testing
 
 If you find other bugs that I haven't mentioned, please report them to gmail (rlastinger) or create a ticket, and I will get to it when I can.  
