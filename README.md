@@ -19,13 +19,14 @@ Example:
 
 My Samba docker container is off in this example:
 
-
+```bash
 root@docker# ./smbscanner.py -ip 192.168.10.5
 attempting to scan 192.168.10.5
 root@docker#
-
+```
 This is the output with my docker container turned on:
 
+```
 root@docker# ./smbscanner.py -ip 192.168.10.5
 attempting to scan 192.168.10.5
 
@@ -34,6 +35,7 @@ False
 
 [+] 192.168.10.5: <smbc.Dirent object "IPC$" (IPC share) at 0x7f0571659e90>, Port 445: closed, Possible DPulsar Target = False
 root@docker:~/smb-scan# 
+```
 
 In the event that port 445 is open, the banner will present itself in the output.
 
@@ -41,6 +43,7 @@ If you use the "-results_file" flag, you should get a nice parseable output:
 
 The file should look like the following:
 
+```
 host: 192.168.10.5
 
 is_smb: true
@@ -68,6 +71,7 @@ is_dpulsar: false
 bg_port: 445
 
 timestamp: 1498609377.92
+```
 
 Dependencies:
 =============
@@ -80,16 +84,20 @@ netaddr
 Usage:
 ======
 
+```bash
 ./smbscanner.py -h
+```
 
 SMB Checker
   
 Example
 ===
 
+```bash
 ./smbscanner.py -ip 192.168.10.5
 
 ./smbscanner.py -netrange 192.168.10.0/24 -results_file results.txt
+```
 
 Bugs
 ====
