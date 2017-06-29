@@ -93,14 +93,12 @@ Example
 
 Bugs
 ====
-packet_rate does not work yet.
+
 
 TODO
 ===
 
 add the abiltity to read target files.
-
-add multi-threading
 
 add credentials
 
