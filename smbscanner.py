@@ -5,7 +5,6 @@ import sys
 import os
 import argparse
 import io
-import json
 import time
 import netaddr
 import threading
