@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 import smbc
-import sys
-import os
 import argparse
-import io
+import logging
 import time
 import netaddr
 import threading
@@ -56,7 +54,7 @@ def thread_check(server, results_file):
         smbscan(server, results_file)
     except Exception as e:
         with print_lock:
-           print "[ERROR] [%s] - %s" % (server, e)
+           logger.error('Scan error at ' + server, exc_info=True)
     finally:
         semaphore.release()
 
