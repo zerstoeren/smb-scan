@@ -15,35 +15,35 @@ def smbscan(server, results_file):
     print "attempting to scan " + server + '\n'    
 # attempt to pull shares
     try:
-        entries = ctx.opendir('smb://' + server).getdents()
-        for entry in entries:
-            if entry is not None:
-                connector = socket(AF_INET, SOCK_STREAM)
-                connector.settimeout(1)
-                try:
-                    connector.connect(('%s' % server, 445))
-                    connector.send('Friendly Portscanner\r\n')
-                    smbbg = connector.recv(2048)
-                    connector.close()
-                    if results_file is not None:
-                        with print_lock:
-                            with open(results_file, 'a+') as outfile:
-                                smb_data = 'host: ' + '%s' % server + '\n' + 'is_smb: true\nopen_share:' + '%s' % entry + '\n' + 'banner: ' + '%s' % smbbg + 'is_dupulsar: true\nbg_port: 445\ntimestamp: ' + '%s' % ts + '\n\n'
-                                outfile.write(smb_data)
-                    else:
-                        with print_lock:
-                            print ("[+] " + '%s' % server + ": " + '%s' % entry + ", Banner Grab: " + '%s' % smbbg + ' Possible DPulsar Target = True')
-                except:
-                    if results_file is not None:
-                        with print_lock:
-                            with open(results_file, 'a+') as outfile:
-                                smb_data = 'host: ' + '%s' % server + '\n' + 'is_smb: true\nopen_share:' + '%s' % entry + '\n' + 'banner: closed\nis_dpulsar: false\nbg_port: 445\ntimestamp: ' + '%s' % ts + '\n\n'
-                                outfile.write(smb_data)
-                    else:
-                        with print_lock:
-                            print ("[+] " + '%s' % server + ": " + '%s' % entry + ", Port 445: closed, Possible DPulsar Target = False")
-            else:
-                continue
+        entry = ctx.opendir('smb://' + server).getdents()
+#        for entry in entries:
+        if entry is not None:
+            connector = socket(AF_INET, SOCK_STREAM)
+            connector.settimeout(1)
+            try:
+                connector.connect(('%s' % server, 445))
+                connector.send('Friendly Portscanner\r\n')
+                smbbg = connector.recv(2048)
+                connector.close()
+                if results_file is not None:
+                    with print_lock:
+                        with open(results_file, 'a+') as outfile:
+                            smb_data = 'host: ' + '%s' % server + '\n' + 'is_smb: true\nopen_share:' + '%s' % entry + '\n' + 'banner: ' + '%s' % smbbg + 'is_dupulsar: true\nbg_port: 445\ntimestamp: ' + '%s' % ts + '\n\n'
+                            outfile.write(smb_data)
+                else:
+                    with print_lock:
+                        print ("[+] " + '%s' % server + ": " + '%s' % entry + ", Banner Grab: " + '%s' % smbbg + ' Possible DPulsar Target = True')
+            except:
+                if results_file is not None:
+                    with print_lock:
+                        with open(results_file, 'a+') as outfile:
+                            smb_data = 'host: ' + '%s' % server + '\n' + 'is_smb: true\nopen_share:' + '%s' % entry + '\n' + 'banner: closed\nis_dpulsar: false\nbg_port: 445\ntimestamp: ' + '%s' % ts + '\n\n'
+                            outfile.write(smb_data)
+                else:
+                    with print_lock:
+                        print ("[+] " + '%s' % server + ": " + '%s' % entry + ", Port 445: closed, Possible DPulsar Target = False")
+        else:
+            pass
     except:
           pass
 
