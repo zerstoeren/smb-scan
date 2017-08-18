@@ -80,6 +80,7 @@ https://pypi.python.org/pypi/pysmbc/
 
 netaddr
 
+pysmb 
 
 Usage:
 ======
@@ -101,7 +102,10 @@ Example
 
 Bugs
 ====
-
+- can now find SMB with good configuration
+- tests SMB on port 139 and 445
+- tests SMB versions
+- ICMP for SMB to speed things up a bit
 
 TODO
 ===
