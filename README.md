@@ -102,10 +102,14 @@ Example
 
 Bugs
 ====
+
 - can now find SMB with good configuration
 - tests SMB on port 139 and 445
 - tests SMB versions
 - ICMP for SMB to speed things up a bit
+- issues were only reported upon finding open shares
+- added echo to detect smb resonses in event of a good configuration
+
 
 TODO
 ===
