@@ -101,7 +101,9 @@ Example
 
 Bugs
 ====
+- issues were only reported upon finding open shares
 
+- added echo to detect smb resonses in event of a good configuration
 
 TODO
 ===
