@@ -106,11 +106,11 @@ Bugs
 - tests SMB on port 139 and 445
 - tests SMB versions
 - ICMP for SMB to speed things up a bit
+- you can now read in a target file
 
 TODO
 ===
 
-add the abiltity to read target files.
 
 add credentials
 

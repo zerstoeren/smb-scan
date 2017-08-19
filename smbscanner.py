@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import smbc
+import sys
 import argparse
 import time
 import netaddr
@@ -10,7 +11,7 @@ from socket import * # noqa
 
 
 def smbscan(server, smbversion, results_file):
-    print "attempting to find open shares on " + server + '\n'
+    sys.stdout.write("attempting to find open shares on " + server + '\n')
     #  smb_obj is needed for when we add new stuff.
     #  currently is a place holder.
     #  smb_obj = []
@@ -41,10 +42,10 @@ def smbscan(server, smbversion, results_file):
                             outfile.write(smb_data)
                 else:
                     with print_lock:
-                        print ("[+] " + '%s' % server + ": " + '%s' % entry +
-                               ", Banner Grab: " + '%s' % smbbg +
-                               ' Possible DPulsar Target: True' +
-                               ', is_smb: ' + smbversion + '\n')
+                        sys.stdout.write("[+] " + '%s' % server + ": " + '%s' % entry +  # noqa
+                                         ", Banner Grab: " + '%s' % smbbg +
+                                         ' Possible DPulsar Target: True' +
+                                         ', is_smb: ' + smbversion + '\n')
             except:
                 if results_file is not None:
                     with print_lock:
@@ -57,9 +58,9 @@ def smbscan(server, smbversion, results_file):
                             outfile.write(smb_data)
                 else:
                     with print_lock:
-                        print ("[+] " + '%s' % server + ": " + '%s' % entry +
-                               ", Port 445: closed, Possible DPulsar Target = False, " +  # noqa
-                               'is_smb: ' + smbversion + '\n')  # noqa
+                        sys.stdout.write("[+] " + '%s' % server + ": " + '%s' % entry +  # noqa
+                                         ", Port 445: closed, Possible DPulsar Target = False, " +  # noqa
+                                         'is_smb: ' + smbversion + '\n')  # noqa
             finally:
                 pass
         else:
@@ -77,16 +78,16 @@ def smbscan(server, smbversion, results_file):
                     pass
         else:
             with print_lock:
-                print ("[+] " + '%s' % server + ": no open shares were found. awesome!, " +  # noqa
-                       'Port 445: closed, Possible Dpulsar Target = False, ' +
-                       'is_smb: ' + smbversion + '\n')
+                sys.stdout.write("[+] " + '%s' % server + ": no open shares were found. awesome!, " +  # noqa
+                                 'Port 445: closed, Possible Dpulsar Target = False, ' +  # noqa
+                                 'is_smb: ' + smbversion + '\n')
                 pass
     finally:
         pass
 
 
 def smb_verify(server):
-    print "Validating SMB and Version for " + server + '\n'
+    sys.stdout.write("Validating SMB and Version for " + server + '\n')
     try:
         smbcon = SMBConnection('', '', server, '', use_ntlm_v2 = False)  # noqa
         assert smbcon.connect(server, 139)
@@ -95,17 +96,17 @@ def smb_verify(server):
         smbcon.close()
         if smb_verify == 'EHLO' and is_smbv2 is True:
             smbversion = 'smbv2'
-            print "[+] " + server + ": Device is " + smbversion + '\n'
+            sys.stdout.write("[+] " + server + ": Device is " + smbversion + '\n')  # noqa
             smbscan(server, smbversion, smbargs.results_file)
         elif smb_verify == 'EHLO' and is_smbv2 is False:
             smbversion = 'smbv1: potential Wannacry target'
-            print '[+] ' + server + ': Device is ' + smbversion + '\n'
+            sys.stdout.write('[+] ' + server + ': Device is ' + smbversion + '\n')  # noqa
             smbscan(server, smbversion, smbargs.results_file)
         else:
             pass
     except Exception, errorcode:
         if errorcode[1] == "Connection refused":
-            print "[-] " + server + ": port 139 is not SMB, trying port 445."
+            sys.stdout.write("[-] " + server + ": port 139 is not SMB, trying port 445.\n")  # noqa
             try:
                 smbcon = SMBConnection('', '', server, '', use_ntlm_v2 = False)  # noqa
                 assert smbcon.connect(server, 445)
@@ -114,17 +115,17 @@ def smb_verify(server):
                 smbcon.close()
                 if smb_verify == 'EHLO' and is_smbv2 is True:
                     smbversion = 'smbv2'
-                    print "[+] " + server + ": Device is " + smbversion + '\n'
+                    sys.stdout.write("[+] " + server + ": Device is " + smbversion + '\n')  # noqa
                     smbscan(server, smbversion, smbargs.results_file)
                 elif smb_verify == 'EHLO' and is_smbv2 is False:
                     smbversion = 'smbv1: potential Wannacry target'
-                    print '[+] ' + server + ': Device is ' + smbversion + '\n'
+                    sys.stdout.write('[+] ' + server + ': Device is ' + smbversion + '\n')  # noqa
                     smbscan(server, smbversion, smbargs.results_file)
                 else:
                     pass
             except Exception, errorcode:
                 if errorcode[1] == "Connection refused":
-                    print '[-] ' + server + ': Does not appear to be an SMB device.\n'  # noqa
+                    sys.stdout.write('[-] ' + server + ': Does not appear to be an SMB device.\n')  # noqa
                     pass
             finally:
                 pass
@@ -153,6 +154,7 @@ if __name__ == "__main__":
     smbparser.add_argument("-netrange", type=str, required=False, help="CIDR Block")  # noqa
     smbparser.add_argument("-ip", type=str, required=False, help="IP address to scan")  # noqa
     smbparser.add_argument("-results_file", type=str, required=False, help="Results File")  # noqa
+    smbparser.add_argument("-target_file", type=str, required=False, help="Targets File")  # noqa
     smbparser.add_argument("-packet_rate", default=1, type=int, required=False, help="Packet rate")  # noqa
     smbargs = smbparser.parse_args()
 
@@ -166,13 +168,27 @@ if __name__ == "__main__":
         for ip in netaddr.IPNetwork(smbargs.netrange).iter_hosts():
             #            smb_scan(str(ip), smbargs.results_file)
             smb_verify(str(ip))
-    elif smbargs.packet_rate is not None:
+    elif smbargs.target_file is not None:
+        with open(smbargs.target_file, mode='r', buffering=1) as targets_file:
+            targets = targets_file.readlines()
+            for target in targets:
+                for ip in netaddr.IPNetwork(target).iter_hosts():
+                    smb_verify(str(ip))
+    elif not smbargs.packet_rate and smbargs.target_file:
+        with open(smbargs.target_file, mode='r', buffering=1) as targets_file:
+            targets = targets_file.readlines()
+            for target in targets:
+                for ip in netaddr.IPNetwork(target).iter_hosts():
+                    semaphore.acquire()
+                    smbthread = threading.Thread(target=thread_check, args=(str(ip), smbargs.results_file))  # noqa
+                    smbthread.start()
+                    smbthread.join()
+    elif not smbargs.packet_rate and smbargs.netrange:
         for ip in netaddr.IPNetwork(smbargs.netrange).iter_hosts():
             semaphore.acquire()
             smbthread = threading.Thread(target=thread_check, args=(str(ip), smbargs.results_file))  # noqa
             smbthread.start()
             smbthread.join()
-
     else:
         print "Please define either IP or Netrange."
         exit
