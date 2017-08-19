@@ -107,6 +107,7 @@ Bugs
 - tests SMB on port 139 and 445
 - tests SMB versions
 - ICMP for SMB to speed things up a bit
+- you can now read in a target file
 - issues were only reported upon finding open shares
 - added echo to detect smb resonses in event of a good configuration
 
@@ -114,7 +115,6 @@ Bugs
 TODO
 ===
 
-add the abiltity to read target files.
 
 add credentials
 
