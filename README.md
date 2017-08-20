@@ -1,7 +1,7 @@
 SMB-Scan - This is a forked version of the original by Crypt0s. Thanks to him for starting the project.  Read below.
 ========
 
-Python-based SMB Share scanner -- scans a bunch of computers, outputs the path and the file permissions for the account
+Python-based SMB Share scanner -- scans a bunch of computers, outputs the file share, SMB version, and some banner information when available.
 
 Just a note is that I kind of started a re-write of this because of some other areas that I would eventually like to take this code in the future.
 
