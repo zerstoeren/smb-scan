@@ -1,4 +1,4 @@
-SMB-Scan - This is a forked beta version, but is functional for most flags that are currently implemented.  Read below.
+SMB-Scan - This is a forked version of the original by Crypt0s. Thanks to him for starting the project.  Read below.
 ========
 
 Python-based SMB Share scanner -- scans a bunch of computers, outputs the path and the file permissions for the account
