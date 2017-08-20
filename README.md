@@ -103,13 +103,13 @@ Example
 Bugs
 ====
 
-- can now find SMB with good configuration
-- tests SMB on port 139 and 445
-- tests SMB versions
-- ICMP for SMB to speed things up a bit
-- you can now read in a target file
-- issues were only reported upon finding open shares
-- added echo to detect smb resonses in event of a good configuration
+- can now find SMB with good configuration - fixed
+- tests SMB on port 139 and 445 - fixed
+- tests SMB versions - fixed
+- ICMP for SMB to speed things up a bit - fixed
+- you can now read in a target file - fixed
+- issues were only reported upon finding open shares - fixed
+- added echo to detect smb resonses in event of a good configuration - fixed
 
 
 TODO
