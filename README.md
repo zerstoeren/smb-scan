@@ -8,12 +8,14 @@ Just a note is that I kind of started a re-write of this because of some other a
 Lesson Learned
 ===
 
-One lesson learned when forking this tool and re-writing sections is that even though SMB can find shares, port 445 iisn't always open so this fork will let you know if shares are available and if port 445 is open it will present the
-banner grab information in the output.  Otherwise, a closed message occurs.  
+One lesson learned when forking this tool and re-writing sections is that even though SMB can find shares, port 445 isn't always open so this fork will let you know if shares are available and if port 445 is open it will present the
+banner grab information in the output.  Otherwise, a closed message occurs.  I have also learned that in certain configurations, both port will be open or just port 445 depending on whether or not SMB has been configured with NetBIOS to broadcast the shares.  I have also found configurations where the SMB banners are presented on both ports, but this scanner should pick that up and let you know what's what.  There is a lot further we can take this project in the future since SMB and WINS hooks are known.  More research and additions to this scanner to come in the future.
 
-The actual SMB shares are found over port 139
+The actual SMB shares are found over port 139.
 because NetBIOS is actually the protocol broadcasting the shares.  I learned this while watching tcpdump and getting a deep 
 review of the smbc library.  It's interesting, so there are 2 different messages based on what the scanner detects.  :)
+
+Also note 2 different SMB libraries and this is because they work in different ways and consider different functionality.  pysmb I found to be better and faster for part of the scan while pysmbc did a better job for other parts.  The two together cover everything that we need currently and for a while into the future though. :)
 
 Example:
 
