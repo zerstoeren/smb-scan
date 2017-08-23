@@ -33,8 +33,8 @@ def smbscan(server, smbversion, results_file):
                     with print_lock:
                         with open(results_file, 'a+') as outfile:
                             smb_data = ('host: ' + '%s' % server + '\n' +
-                                        'is_smb: ' + smbversion +
-                                        '\nopen_share:' +
+                                        'is_smb: true\nsmb_ver: ' +
+                                        smbversion + '\nopen_share:' +
                                         '%s' % entry + '\n' + 'banner: ' +
                                         '%s' % smbbg +
                                         'is_dupulsar: true\nbg_port: 445\ntimestamp: ' +  # noqa
@@ -45,14 +45,14 @@ def smbscan(server, smbversion, results_file):
                         sys.stdout.write("[+] " + '%s' % server + ": " + '%s' % entry +  # noqa
                                          ", Banner Grab: " + '%s' % smbbg +
                                          ' Possible DPulsar Target: True' +
-                                         ', is_smb: ' + smbversion + '\n')
+                                         ', is_smb: True, smb_ver: ' + smbversion + '\n')  # noqa
             except:
                 if results_file is not None:
                     with print_lock:
                         with open(results_file, 'a+') as outfile:
                             smb_data = ('host: ' + '%s' % server + '\n' +
-                                       'is_smb: ' + smbversion + '\nopen_share:' +  # noqa
-                                       '%s' % entry + '\n' +
+                                       'is_smb: true\nsmb_ver: ' + smbversion +
+                                       '\nopen_share: ' +  '%s' % entry + '\n' +  # noqa
                                        'banner: closed\nis_dpulsar: false\nbg_port: 445\ntimestamp: '  # noqa
                                        + '%s' % ts + '\n\n')
                             outfile.write(smb_data)
@@ -60,7 +60,7 @@ def smbscan(server, smbversion, results_file):
                     with print_lock:
                         sys.stdout.write("[+] " + '%s' % server + ": " + '%s' % entry +  # noqa
                                          ", Port 445: closed, Possible DPulsar Target = False, " +  # noqa
-                                         'is_smb: ' + smbversion + '\n')  # noqa
+                                         'is_smb: True, smb_ver: ' + smbversion + '\n')  # noqa
             finally:
                 pass
         else:
@@ -70,7 +70,7 @@ def smbscan(server, smbversion, results_file):
             with print_lock:
                 with open(results_file, 'a+') as outfile:
                     smb_data = ('host: ' + '%s' % server + '\n' +
-                                'is_smb: ' + smbversion +
+                                'is_smb: true\nsmb_ver: ' + smbversion +
                                 '\nopen_share: no open shares were found. awesome!\n' +  # noqa
                                 'banner: closed\nis_dpulsar: false\nbg_port: 445\n' +  # noqa
                                 'timestamp: ' + '%s' % ts + '\n\n')
@@ -80,7 +80,7 @@ def smbscan(server, smbversion, results_file):
             with print_lock:
                 sys.stdout.write("[+] " + '%s' % server + ": no open shares were found. awesome!, " +  # noqa
                                  'Port 445: closed, Possible Dpulsar Target = False, ' +  # noqa
-                                 'is_smb: ' + smbversion + '\n')
+                                 'is_smb: True, smb_ver: ' + smbversion + '\n')
                 pass
     finally:
         pass
@@ -125,7 +125,7 @@ def smb_verify(server):
                     pass
             except Exception, errorcode:
                 if errorcode[1] == "Connection refused":
-                    sys.stdout.write('[-] ' + server + ': Does not appear to be an SMB device.\n')  # noqa
+                    sys.stdout.write('[-] ' + server + ': is_smb: False.\n')  # noqa
                     pass
             finally:
                 pass
@@ -164,16 +164,19 @@ if __name__ == "__main__":
     if smbargs.ip is not None:
         #        smb_scan(smbargs.ip, smbargs.results_file)
         smb_verify(smbargs.ip)
+
     elif smbargs.netrange is not None:
         for ip in netaddr.IPNetwork(smbargs.netrange).iter_hosts():
             #            smb_scan(str(ip), smbargs.results_file)
             smb_verify(str(ip))
+
     elif smbargs.target_file is not None:
         with open(smbargs.target_file, mode='r', buffering=1) as targets_file:
             targets = targets_file.readlines()
             for target in targets:
                 for ip in netaddr.IPNetwork(target).iter_hosts():
                     smb_verify(str(ip))
+
     elif not smbargs.packet_rate and smbargs.target_file:
         with open(smbargs.target_file, mode='r', buffering=1) as targets_file:
             targets = targets_file.readlines()
@@ -183,12 +186,14 @@ if __name__ == "__main__":
                     smbthread = threading.Thread(target=thread_check, args=(str(ip), smbargs.results_file))  # noqa
                     smbthread.start()
                     smbthread.join()
+
     elif not smbargs.packet_rate and smbargs.netrange:
         for ip in netaddr.IPNetwork(smbargs.netrange).iter_hosts():
             semaphore.acquire()
             smbthread = threading.Thread(target=thread_check, args=(str(ip), smbargs.results_file))  # noqa
             smbthread.start()
             smbthread.join()
+
     else:
         print "Please define either IP or Netrange."
         exit
