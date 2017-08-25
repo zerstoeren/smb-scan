@@ -17,7 +17,8 @@ RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get update && apt-get install -y \
     python-smbc \
-    python-pip
+    python-pip \
+    git
 
 #########################################################
 # install smb-scan and pip install netaddr
