@@ -10,7 +10,7 @@ from smb.SMBConnection import SMBConnection
 from socket import * # noqa
 
 
-def smbscan(server, smbversion, results_file):
+def smbscan(server, port, smbversion, results_file):
     sys.stdout.write("attempting to find open shares on " + server + '\n')
     #  smb_obj is needed for when we add new stuff.
     #  currently is a place holder.
@@ -37,7 +37,8 @@ def smbscan(server, smbversion, results_file):
                                         smbversion + '\nopen_share:' +
                                         '%s' % entry + '\n' + 'banner: ' +
                                         '%s' % smbbg +
-                                        'is_dupulsar: true\nbg_port: 445\ntimestamp: ' +  # noqa
+                                        'is_dupulsar: true\nsmb_port: ' + 
+                                        '%s' % port + '\nbg_port: 445\ntimestamp: ' +  # noqa
                                         '%s' % ts + '\n\n')
                             outfile.write(smb_data)
                 else:
@@ -53,8 +54,9 @@ def smbscan(server, smbversion, results_file):
                             smb_data = ('host: ' + '%s' % server + '\n' +
                                        'is_smb: true\nsmb_ver: ' + smbversion +
                                        '\nopen_share: ' +  '%s' % entry + '\n' +  # noqa
-                                       'banner: closed\nis_dpulsar: false\nbg_port: 445\ntimestamp: '  # noqa
-                                       + '%s' % ts + '\n\n')
+                                       'banner: closed\nis_dpulsar: false\nsmb_port: ' +  # noqa
+                                       '%s' % port + '\nbg_port: 445\ntimestamp: ' +  # noqa
+                                       '%s' % ts + '\n\n')
                             outfile.write(smb_data)
                 else:
                     with print_lock:
@@ -72,7 +74,8 @@ def smbscan(server, smbversion, results_file):
                     smb_data = ('host: ' + '%s' % server + '\n' +
                                 'is_smb: true\nsmb_ver: ' + smbversion +
                                 '\nopen_share: no open shares were found. awesome!\n' +  # noqa
-                                'banner: closed\nis_dpulsar: false\nbg_port: 445\n' +  # noqa
+                                'banner: closed\nis_dpulsar: false\nsmb_port: ' +  # noqa
+                                '%s' % port + '\nbg_port: 445\n' +  # noqa
                                 'timestamp: ' + '%s' % ts + '\n\n')
                     outfile.write(smb_data)
                     pass
@@ -95,13 +98,15 @@ def smb_verify(server):
         smb_verify = smbcon.echo('EHLO', timeout=1)
         smbcon.close()
         if smb_verify == 'EHLO' and is_smbv2 is True:
+            port = 139
             smbversion = 'smbv2'
             sys.stdout.write("[+] " + server + ": Device is " + smbversion + '\n')  # noqa
-            smbscan(server, smbversion, smbargs.results_file)
+            smbscan(server, port, smbversion, smbargs.results_file)
         elif smb_verify == 'EHLO' and is_smbv2 is False:
+            port = 139
             smbversion = 'smbv1: potential Wannacry target'
             sys.stdout.write('[+] ' + server + ': Device is ' + smbversion + '\n')  # noqa
-            smbscan(server, smbversion, smbargs.results_file)
+            smbscan(server, port, smbversion, smbargs.results_file)
         else:
             pass
     except Exception, errorcode:
@@ -114,13 +119,15 @@ def smb_verify(server):
                 smb_verify = smbcon.echo('EHLO', timeout=1)
                 smbcon.close()
                 if smb_verify == 'EHLO' and is_smbv2 is True:
+                    port = 445
                     smbversion = 'smbv2'
                     sys.stdout.write("[+] " + server + ": Device is " + smbversion + '\n')  # noqa
                     smbscan(server, smbversion, smbargs.results_file)
                 elif smb_verify == 'EHLO' and is_smbv2 is False:
+                    port = 445
                     smbversion = 'smbv1: potential Wannacry target'
                     sys.stdout.write('[+] ' + server + ': Device is ' + smbversion + '\n')  # noqa
-                    smbscan(server, smbversion, smbargs.results_file)
+                    smbscan(server, port, smbversion, smbargs.results_file)
                 else:
                     pass
             except Exception, errorcode:
