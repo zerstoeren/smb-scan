@@ -6,7 +6,7 @@ virtualenv:
 # command to install dependencies
 before_install:
 - sudo apt-get update -qq
-- sudo apt-get install -qq libtalloc2 libtevent0 libldb1 libwbclient0 python-talloc samba-libs libsmbclient
+- sudo apt-get install -qq libtalloc2 libtevent0 libldb1 libwbclient0 python-talloc samba-libs libsmbclient gcc make automake
 install:
   - pip install -r requirements.txt
   - pip install pysmbc
