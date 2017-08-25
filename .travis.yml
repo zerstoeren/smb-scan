@@ -9,4 +9,4 @@ cache: pip
 install: "pip install -r requirements.txt"
 install: "sudo apt-get install -y python-smbc"
 # command to run tests
-script: python smbscanner.py -ip 64.251.26.227
+script: python smbscanner.py -h
