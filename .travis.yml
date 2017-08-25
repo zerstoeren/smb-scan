@@ -9,6 +9,5 @@ before_install:
 - sudo apt-get install -qq python-smbc
 install:
   - pip install -r requirements.txt
-  - pip install pysmbc
 # command to run tests
 script: python smbscanner.py -h
