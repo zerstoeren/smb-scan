@@ -6,13 +6,9 @@ virtualenv:
 # command to install dependencies
 before_install:
   - sudo apt-get -qq update
-addons:
-  apt:
-   packages:
-   - python-smbc
+  - sudo apt-get install -yqq python-smbc
 cache: pip
 install:
   - pip install -r requirements.txt
-  - sudo apt-get install -y python-smbc 
 # command to run tests
 script: python smbscanner.py -h
