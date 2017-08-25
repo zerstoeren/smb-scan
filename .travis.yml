@@ -4,8 +4,9 @@ python:
 # command to install dependencies
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y python-smbc
+#  - sudo apt-get install -y python-smbc
 cache: pip
 install: "pip install -r requirements.txt"
+install: "sudo apt-get install -y python-smbc"
 # command to run tests
-script: python smbscanner.py -h
+script: python smbscanner.py -ip 64.251.26.227
