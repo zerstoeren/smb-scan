@@ -1,7 +1,7 @@
 language: python
 python:
   - "2.7"
-virtual_env:
+virtualenv:
     - "2.7_with_system_site_packages"
     - "3.2_with_system_site_packages"
 # command to install dependencies
