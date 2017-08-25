@@ -2,11 +2,10 @@ language: python
 python:
   - "2.7"
 # command to install dependencies
-before_script:
+before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y python-smbc
 cache: pip
 install: "pip install -r requirements.txt"
-install: "apt-get install -y python-smbc"
 # command to run tests
 script: python smbscanner.py -h
