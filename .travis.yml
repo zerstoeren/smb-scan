@@ -1,14 +1,12 @@
+sudo: required
+
 language: python
-python:
-  - "2.7"
-virtualenv:
-  system_site_packages: true
+
+services: docker
 # command to install dependencies
 before_install:
-- sudo apt-get update -qq
-install:
-  - pip install -r requirements.txt
-before_script:
-- sudo apt-get install -qq python-smbc
+  - docker build -t smb-scan .
+  - docker run -it smb-scan /bin/bash 
 # command to run tests
-script: python smbscanner.py -h
+script: docker run -it smb-scan /bin/bash -c "sudo python /root/smb-scan/smbscanner.py -h"
+
