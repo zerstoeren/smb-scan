@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
 # install smb-scan and pip install netaddr
 #########################################################
 
-RUN git clone https://github.com/zerstoeren/smb-scan
+RUN git clone https://github.com/zerstoeren/smb-scan.git
 RUN pip install -r smb-scan/requirements.txt
 RUN mv smb-scan /root/
 
