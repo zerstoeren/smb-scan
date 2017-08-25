@@ -6,7 +6,6 @@ services: docker
 # command to install dependencies
 before_install:
   - docker build -t smb-scan .
-  - docker run -it smb-scan /bin/bash 
 # command to run tests
 script: docker run -it smb-scan /bin/bash -c "sudo python /root/smb-scan/smbscanner.py -h"
 
