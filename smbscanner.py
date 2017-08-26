@@ -20,7 +20,6 @@ def smbscan(server, port, smbversion, results_file):
     try:
         ts = time.strftime("%Y-%m-%d %H:%M")
         entry = ctx.opendir('smb://' + server).getdents()
-#        for entry in entries:
         if entry is not None:
             connector = socket(AF_INET, SOCK_STREAM)  # noqa
             connector.settimeout(1)
