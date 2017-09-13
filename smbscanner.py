@@ -36,7 +36,7 @@ def smbscan(server, port, smbversion, results_file):
                                         smbversion + '\nopen_share:' +
                                         '%s' % entry + '\n' + 'banner: ' +
                                         '%s' % smbbg +
-                                        'is_dupulsar: true\nsmb_port: ' + 
+                                        'is_dupulsar: true\nsmb_port: ' +
                                         '%s' % port + '\nbg_port: 445\ntimestamp: ' +  # noqa
                                         '%s' % ts + '\n\n')
                             outfile.write(smb_data)
@@ -118,7 +118,7 @@ def smb_verify(server):
         else:
             pass
     except Exception, errorcode:
-          if len(errorcode) > 1 and errorcode[1] == "Connection refused":
+        if len(errorcode) > 1 and errorcode[1] == "Connection refused":
             sys.stdout.write("[-] " + server + ": port 139 is not SMB, trying port 445.\n")  # noqa
             try:
                 smbcon = SMBConnection('', '', server, '', use_ntlm_v2 = False)  # noqa
@@ -139,12 +139,12 @@ def smb_verify(server):
                 else:
                     pass
             except Exception, TypeError:
-                if "Server does not support any of the pysmb dialects." in '%s' % TypeError:
+                if "Server does not support any of the pysmb dialects." in '%s' % TypeError: # noqa
                     smbversion = 'smbv3'
                     port = 445
                     sys.stdout.write('[+] ' + server + ": Device is " + smbversion + '\n') # noqa
                     smbscan(server, port, smbversion, smbargs.results_file)
-                else: 
+                else:
                     pass
             except Exception, errorcode:
                 if errorcode[1] == "Connection refused":
@@ -152,9 +152,6 @@ def smb_verify(server):
                     pass
             finally:
                 pass
-       # else:
-        #    pass
-
     finally:
         pass
 
