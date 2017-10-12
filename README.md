@@ -1,4 +1,4 @@
-SMB-Scan - This is a forked version of the original by Crypt0s. Thanks to him for starting the project.  Read below.
+SMB-Scan - This is a complete rewrite v2 of the original by Crypt0s. Thanks to him for starting the project.  Read below.
 ========
 
 Python-based SMB Share scanner -- scans a bunch of computers, outputs the file share, SMB version, and some banner information when available.
