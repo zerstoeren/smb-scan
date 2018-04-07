@@ -174,7 +174,6 @@ if __name__ == "__main__":
             targets = targets_file.readlines()
             for target in targets:
                 for ip in netaddr.IPNetwork(target).iter_hosts():
-
                     threads = [smbargs.packet_rate]
                     smbthread = threading.Thread(target=smb_verify, args=(str(ip),))
                     threads.append(smbthread)
