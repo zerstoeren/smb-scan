@@ -112,6 +112,7 @@ Bugs
 - you can now read in a target file - fixed
 - issues were only reported upon finding open shares - fixed
 - added echo to detect smb resonses in event of a good configuration - fixed
+- issues reported with threading taking a long time to process - fixed... 255 IPs has been reduced from 17.34 minutes to 1.2 minutes.
 
 
 TODO
